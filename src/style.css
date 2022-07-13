@@ -69,11 +69,11 @@ body {
     padding-left: 10px;
 }
 
-.default-button-container:hover{
-    background-color: var(--secondary-dark);
+.default-button-container:hover,#inbox-button:hover, #today-button:hover, #weekly-button:hover{
     background-color: var(--secondary-dark);
     border-radius: 5px;
     cursor: pointer;
+
 }
 
 
@@ -89,9 +89,14 @@ body {
 
 
 
-#add-new-project-container:hover, #add-new-project:hover{
+
+
+
+
+#add-new-project-container:hover, #add-new-project:hover, .fa-bold.fa-plus:hover{
     color: var(--secondary-dark);
-    transition: 0.3s;
+    transition: 0.2s;
+    cursor: pointer;
 }
 
 

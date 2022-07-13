@@ -3,7 +3,7 @@ import { projectList, createProject, removeProject } from './projects.js';
 const container = document.getElementById('container');
 
 function initButtons() {
-  const newProjectButton = document.getElementById('add-new-project');
+  const newProjectButton = document.getElementById('add-new-project-container');
   newProjectButton.addEventListener('click', newProjectForm);
 }
 
