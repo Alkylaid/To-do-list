@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/9ce8f4c7bf.js"
+      crossorigin="anonymous"
+    ></script>
     <title>To-do-list</title>
-</head>
-<body>
+  </head>
+  <body>
     <div id="container">
-        <div id="header"></div>
-        <div id="nav-menu">
-            <div id="default">
-                <button class="default nav button" id="inbox-button">Inbox</button>
-                <button class="default nav button" id="today-button">Today</button>
-                <button class="default nav button" id="weekly-button">Weekly</button>
-            </div>
-            <div id="projects">
-                <h1 class="nav-menu-title" id="add-projects-title">Projects</h1>
-                <button class="nav button" id="add-new-project">Add New Projects</button>
-            </div>
+      <div id="header"></div>
+      <div id="nav-menu">
+        <div id="default">
+          <div class= "default-button-container"><span class="fa-solid fa-inbox"></span><button class="default nav button" id="inbox-button">Inbox</button></div>
+          <div class= "default-button-container"><span class="fa-solid fa-calendar-day"></span><button class="default nav button" id="today-button">Today</button></div>
+          <div class= "default-button-container"><span class="fa-solid fa-calendar-week"></span><button class="default nav button" id="weekly-button">Weekly</button></div>
         </div>
-        <div id="content"></div>
-        <div id="footer"></div>
+        <div id="projects">
+          <h1 class="nav-menu-title" id="add-projects-title">Projects</h1>
+          <div id="add-new-project-container">
+            <span class="fa-bold fa-plus"></span>
+            <button class="nav button" id="add-new-project">
+              Add New Projects
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="content"></div>
+      <div id="footer"></div>
     </div>
-</body>
-<script src='main.js'></script>
+  </body>
+  <script src="main.js"></script>
 </html>
