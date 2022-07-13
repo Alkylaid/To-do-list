@@ -20,6 +20,10 @@ class Project{
         const index = this.toDos.indexOf(item);
         this.toDos.splice(index, 1);
     }
+
+    getName() {
+        return this.name;
+    }
 }
 
 function createProject(name) {
