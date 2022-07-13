@@ -34,8 +34,7 @@ function addProject(project) {
     projectList.push(project);
 }
 
-function removeProject(project) {
-    const index = projectList.indexOf(project);
+function removeProject(index) {
     projectList.splice(index, 1);
 }
 
