@@ -5,6 +5,7 @@ const container = document.getElementById('container');
 function initButtons() {
   const newProjectButton = document.getElementById('add-new-project-container');
   newProjectButton.addEventListener('click', newProjectForm);
+  createProject('inbox');
 }
 
 function newProjectForm() {
@@ -119,3 +120,4 @@ function deleteProject(index) {
     updateProjectList();
 
 }
+
