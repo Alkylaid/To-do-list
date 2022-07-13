@@ -8,9 +8,11 @@ function initButtons() {
 }
 
 function newProjectForm() {
-  const addNewProjectBtn = document.getElementById('add-new-project');
+  const newProjectContainer = document.createElement('div');
+  newProjectContainer.setAttribute('id', 'new-project-container');
+
+  const addNewProjectBtn = document.getElementById('add-new-project-container');
   addNewProjectBtn.style.display = 'none';
-  const projects = document.getElementById('projects');
 
   const newProjectFormTitle = document.createElement('p');
   newProjectFormTitle.classList.add('title');
@@ -59,7 +61,7 @@ function projectFormClose() {
   const projects = document.getElementById('projects');
   const form = document.getElementById('new-project-form');
   projects.removeChild(form);
-  const addNewProjectBtn = document.getElementById('add-new-project');
+  const addNewProjectBtn = document.getElementById('add-new-project-container');
   addNewProjectBtn.style.display = '';
 }
 
@@ -75,21 +77,36 @@ function newProjectSubmit() {
 
 function updateProjectList() {
 
-  const list = document.querySelectorAll('.projectList');
-  list.forEach((project) => project.remove());
+  const list = document.getElementById('projects-container');
+  if(list) {
+  list.remove();}
   const projects = document.getElementById('projects');
+  const projectsContainer = document.createElement('div');
+  projectsContainer.setAttribute('id', 'projects-container');
+  projects.appendChild(projectsContainer)
   for (let i = 0; i < projectList.length; i++) {
-    const div = document.createElement('div');
-    div.classList.add('projectList');
-    div.setAttribute('id', `project-[${i}]`);
-    div.innerHTML = `${projectList[i].getName()}`;
-    const span = document.createElement('span');
-    span.classList.add('project-delete');
+    const project = document.createElement('div');
+    project.classList.add('project');
 
-    span.addEventListener('click', () => deleteProject(i));
-    div.appendChild(span);
+    const frontSpan = document.createElement('span');
+    frontSpan.classList.add('fa-solid')
+    frontSpan.classList.add('fa-list-check');
+    project.appendChild(frontSpan);
 
-    projects.append(div);
+    const projectName = document.createElement('div');
+    projectName.classList.add('project-name');
+    projectName.setAttribute('id', `project-[${i}]`);
+    projectName.innerHTML = `${projectList[i].getName()}`;
+    project.appendChild(projectName);
+
+    const backSpan = document.createElement('span');
+    backSpan.classList.add('project-delete');
+    backSpan.classList.add('fa-regular');
+    backSpan.classList.add('fa-circle-xmark');
+    backSpan.addEventListener('click', () => deleteProject(i));
+    project.appendChild(backSpan);
+
+    projectsContainer.append(project);
   }
   
 }
