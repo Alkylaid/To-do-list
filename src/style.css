@@ -367,10 +367,20 @@ label{
     height: 50px;
     border: 1px solid black;
     margin-bottom: 10px;
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     align-items: center;
+
     column-gap: 20px;
+    border-radius: 10px;
     
+}
+
+.task-item:hover{
+    background-color: var(--secondary-dark);
+    cursor: pointer;
+    color: var(--primary-light);
+    box-shadow: 0px 0px 5px var(--primary-dark);
 }
 
 .task-item .fa-circle, .task-item .fa-circle-check{
@@ -389,7 +399,10 @@ label{
     column-gap: 10px;
     align-items: center;
     justify-self: center;
+   
 }
+
+
 
 .task-item p{
     justify-self: start;
@@ -400,9 +413,10 @@ label{
     font-size: 1.2rem;
 }
 
-.task-item .fa-trash-can:hover{
+.fa-trash-can:hover{
     justify-self: end;
     font-size: 1.2rem;
-    color: var(--secondary-dark);
+    text-shadow: 0px 0px 5px var(--primary-light);
     cursor: pointer;
 }
+
