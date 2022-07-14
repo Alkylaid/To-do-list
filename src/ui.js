@@ -1,12 +1,14 @@
 export { initButtons };
-import {load} from './content.js';
+import {load, initAddTaskButton, showTaskButton} from './content.js';
 const projectList = [];
 
 function initButtons() {
   const inboxBtn = document.getElementById('inbox-button');
+
   inboxBtn.addEventListener('click', () => {
     clearActiveClasses();
     document.getElementById('inbox-container').classList.add('active');
+    resetContent();
     load();
   });
 
@@ -14,6 +16,7 @@ function initButtons() {
   todayBtn.addEventListener('click', () => {
     clearActiveClasses();
     document.getElementById('today-container').classList.add('active');
+    resetContent();
     load();
   });
 
@@ -21,6 +24,7 @@ function initButtons() {
   weeklyBtn.addEventListener('click', () => {
     clearActiveClasses();
     document.getElementById('weekly-container').classList.add('active');
+    resetContent();
     load();
   });
 
@@ -122,6 +126,7 @@ function updateProjectList() {
     projectName.addEventListener('click', () => {
       clearActiveClasses();
       project.classList.add('active');
+      resetContent();
       load();
     });
     project.appendChild(projectName);
@@ -149,3 +154,11 @@ function clearActiveClasses() {
     active.classList.remove('active');
   });
 }
+
+function resetContent() {
+  const taskForm = document.getElementById('task-form');
+  const addTaskBtn = document.getElementById('add-task-btn');
+  if (taskForm) {
+    taskForm.remove();
+    showTaskButton();}
+  }

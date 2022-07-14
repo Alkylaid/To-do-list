@@ -1,4 +1,4 @@
-export { load, loadToday, loadWeekly};
+export { load, loadToday, loadWeekly, initAddTaskButton, showTaskButton};
 import { parse, format, addWeeks, compareAsc } from 'date-fns';
 import { createItem, itemList, removeItem } from './items.js';
 
@@ -98,7 +98,17 @@ function initTaskForm() {
   const date = document.createElement('input');
   date.setAttribute('type', 'date');
   date.setAttribute('id', 'date-input-field');
+
   date.value = format(new Date(), 'yyyy-MM-d');
+    if (document.querySelector('.active') === document.getElementById('weekly-container')) {
+        const maxDate = format(addWeeks(new Date(), 1),'yyyy-MM-d');
+        date.max = maxDate;
+        date.min = date.value;
+    } else if (document.querySelector('.active') === document.getElementById('today-container')) {
+        date.max = date.value;
+        date.min = date.value;
+    }
+
   taskForm.appendChild(date);
 
   const descLabel = document.createElement('label');
@@ -157,6 +167,7 @@ function initTaskForm() {
   buttonContainer.appendChild(submitButton);
   taskForm.appendChild(buttonContainer);
 }
+
 
 function hideTaskButton() {
   const addTaskBtn = document.getElementById('add-task-btn');
@@ -283,3 +294,4 @@ function deleteTask(index) {
   removeItem(index);
   load();
 }
+
