@@ -1,20 +1,32 @@
 export { initButtons };
-import { projectList, createProject, removeProject } from './projects.js';
-import { load, setCurrentProject } from './content.js';
-const container = document.getElementById('container');
+import { itemList, createItem } from './items.js';
+import { load, loadToday, loadWeekly, setCurrentProject } from './content.js';
+const projectList = [];
 
 function initButtons() {
   const inboxBtn = document.getElementById('inbox-button');
   inboxBtn.addEventListener('click', () => {
     clearActiveClasses();
     document.getElementById('inbox-container').classList.add('active');
-    setCurrentProject(0);
     load();
-  })
+  });
+
+  const todayBtn = document.getElementById('today-button');
+  todayBtn.addEventListener('click', () => {
+    clearActiveClasses();
+    document.getElementById('today-container').classList.add('active');
+    load();
+  });
+
+  const weeklyBtn = document.getElementById('weekly-button');
+  weeklyBtn.addEventListener('click', () => {
+    clearActiveClasses();
+    document.getElementById('weekly-container').classList.add('active');
+    load();
+  });
+
   const newProjectButton = document.getElementById('add-new-project-container');
   newProjectButton.addEventListener('click', newProjectForm);
-  createProject('inbox');
-
 }
 
 function newProjectForm() {
@@ -77,43 +89,42 @@ function projectFormClose() {
 
 function newProjectSubmit() {
   const projectName = document.getElementById('project-name-input');
-  if(projectName.value === '') {
-    createProject("Default");
+  if (projectList.includes(projectName.value)) {
+    alert('Cannot have duplicate project names');
   } else {
-  createProject(projectName.value);}
-  projectFormClose();
-  updateProjectList();
+    projectList.push(projectName.value);
+    projectFormClose();
+    updateProjectList();
+  }
 }
 
 function updateProjectList() {
-
   const list = document.getElementById('projects-container');
-  if(list) {
-  list.remove();}
+  if (list) {
+    list.remove();
+  }
   const projects = document.getElementById('projects');
   const projectsContainer = document.createElement('div');
   projectsContainer.setAttribute('id', 'projects-container');
-  projects.appendChild(projectsContainer)
-  for (let i = 1; i < projectList.length; i++) {
+  projects.appendChild(projectsContainer);
+  for (let i = 0; i < projectList.length; i++) {
     const project = document.createElement('div');
     project.classList.add('project');
     const frontSpan = document.createElement('span');
-    frontSpan.classList.add('fa-solid')
+    frontSpan.classList.add('fa-solid');
     frontSpan.classList.add('fa-list-check');
     project.appendChild(frontSpan);
-    
-
+    project.value = projectList[i];
     const projectName = document.createElement('div');
     projectName.classList.add('project-name');
     projectName.setAttribute('id', `project-[${i}]`);
-    projectName.innerHTML = `${projectList[i].getName()}`;
-    projectName.value = i;
+    projectName.innerHTML = `${projectList[i]}`;
+    
     projectName.addEventListener('click', () => {
-    clearActiveClasses();
-    project.classList.add('active');
-    setCurrentProject(i);
-    load();}
-    );
+      clearActiveClasses();
+      project.classList.add('active');
+      load();
+    });
     project.appendChild(projectName);
     const backSpan = document.createElement('span');
     backSpan.classList.add('project-delete');
@@ -124,23 +135,18 @@ function updateProjectList() {
 
     projectsContainer.append(project);
   }
-  
 }
-
 
 function deleteProject(index) {
-    removeProject(index);
-    const projects = document.getElementById(`project-[${index}]`);
-    projects.remove();
-    updateProjectList();
-
+  projectList.splice(index, 1);
+  const projects = document.getElementById(`project-[${index}]`);
+  projects.remove();
+  updateProjectList();
 }
 
-
 function clearActiveClasses() {
-  const activeClasses = document.querySelectorAll('.active')
+  const activeClasses = document.querySelectorAll('.active');
   activeClasses.forEach((active) => {
     active.classList.remove('active');
-  })
-  }
-
+  });
+}

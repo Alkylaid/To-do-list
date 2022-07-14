@@ -1,13 +1,15 @@
-export {createItem}
+export {createItem , itemList, removeItem}
 
+const itemList = []
 class Item{
-    constructor(name, description, dateCreated, dueDate, priority) {
+    constructor(name, description, dateCreated, dueDate, priority, project) {
         this.name = name;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dueDate = dueDate;
         this.priority = priority;
         this.isCompleted = false;
+        this.project = project;
     }
 
     getName() {
@@ -42,9 +44,17 @@ class Item{
         return this.isCompleted;
     }
 
+    getProject() {
+        return this.project;
+    }
+
     
 }
 
-function createItem(title, description, dateCreated, dueDate, priority) {
-    return new Item(title, description, dateCreated, dueDate, priority);
+function createItem(title, description, dateCreated, dueDate, priority, project) {
+    itemList.push(new Item(title, description, dateCreated, dueDate, priority, project));
+}
+
+function removeItem(index) {
+    itemList.splice(index, 1);
 }

@@ -1,29 +1,75 @@
-export { load, setCurrentProject };
-import { parse, format } from 'date-fns';
-import { projectList } from './projects.js';
-import { createItem } from './items.js';
+export { load, loadToday, loadWeekly, setCurrentProject };
+import { parse, format, addWeeks, compareAsc } from 'date-fns';
+import { projectList, mergeTaskLists } from './projects.js';
+import { createItem, itemList, removeItem } from './items.js';
 
 const content = document.getElementById('content');
 let currentProjectIndex = 0;
 
-function setCurrentProject(index){
-    currentProjectIndex = index;
+function setCurrentProject(index) {
+  currentProjectIndex = index;
 }
 
 function load() {
-  if(!document.getElementById('add-task-btn')){
-  initAddTaskButton();}
-  if(document.getElementById('task-list')){
+  if (!document.getElementById('add-task-btn')) {
+    initAddTaskButton();
+  }
+  if (document.getElementById('task-list')) {
     document.getElementById('task-list').remove();
   }
-  if (projectList[currentProjectIndex].getLength !== 0) {
-  const taskList = document.createElement('div');
-  taskList.setAttribute('id', 'task-list');
-  content.prepend(taskList);
-  for (let i = 0; i < projectList[currentProjectIndex].getLength(); i++) {
-    createTask(i);
-  }}
+  if (itemList.length !== 0) {
+    const taskList = document.createElement('div');
+    taskList.setAttribute('id', 'task-list');
+    content.prepend(taskList);
+    const activeClasses = document.querySelectorAll('.active');
+    activeClasses.forEach((active) => {
+      if (active === document.getElementById('today-container')) {
+        loadToday();
+      } else if (active === document.getElementById('weekly-container')) {
+        loadWeekly();
+      } else if (active === document.getElementById('inbox-container')) {
+        for (let i = 0; i < itemList.length; i++) {
+            createTask(i);
+          }
+      } else {
+        loadProjects();
+      }
+    });
+  }
+}
 
+
+
+function loadToday() {
+  for (let i = 0; i < itemList.length; i++) {
+    const taskDueDate = format(itemList[i].getDueDate(), 'MM/dd/yyyy');
+    const currentDate = format(new Date(), 'MM/dd/yyyy');
+    if (taskDueDate === currentDate) {
+      createTask(i);
+    }
+  }
+}
+
+function loadWeekly() {
+  for (let i = 0; i < itemList.length; i++) {
+    const today = new Date();
+    const nextWeek = addWeeks(today, 1);
+    const taskDueDate = itemList[i].getDueDate();
+    const comparedDates = compareAsc(taskDueDate, nextWeek);
+    if (comparedDates === -1 || comparedDates === 0) {
+      createTask(i);
+    }
+  }
+}
+
+function loadProjects() {
+    const activeProject = document.querySelector('.active').value;
+
+    for (let i = 0; i < itemList.length; i++) {
+        if (itemList[i].getProject() === activeProject) {
+            createTask(i);
+        }
+    }
 }
 
 function initAddTaskButton() {
@@ -135,24 +181,25 @@ function changePriority(node) {
     priority.style.background = 'yellow';
     priority.value = 'med';
     if (priorityText) {
-    priorityText.innerHTML = 'Med';}
+      priorityText.innerHTML = 'Med';
+    }
   } else if (priority.value === 'med') {
     priority.style.background = 'red';
     priority.value = 'high';
     if (priorityText) {
-    priorityText.innerHTML = 'High';
+      priorityText.innerHTML = 'High';
     }
   } else if (priority.value === 'high') {
     priority.style.background = 'green';
     priority.value = 'low';
     if (priorityText) {
-    priorityText.innerHTML = 'Low';
+      priorityText.innerHTML = 'Low';
     }
   }
 }
 
 function addTasks() {
-  const name = document.getElementById('task-name-field').value;
+  const taskName = document.getElementById('task-name-field').value;
   const dateCreated = new Date();
   const date = parse(
     document.getElementById('date-input-field').value,
@@ -161,91 +208,85 @@ function addTasks() {
   );
   const description = document.getElementById('description-input-field').value;
   const priority = document.querySelector('.priority-box-form').value;
-  projectList[currentProjectIndex].add(
-    createItem(name, description, dateCreated, date, priority)
-  );
+  const currentProject = document.querySelector('.active').value;
+  createItem(taskName, description, dateCreated, date, priority, currentProject);
 }
 
-
 function createTask(index) {
-    const taskList = document.getElementById('task-list');
-    const task = document.createElement('div');
-    task.classList.add('task-item');
-    const circle = document.createElement('span');
-    circle.classList.add('fa-regular');
-    if (projectList[currentProjectIndex].get(index).getCompletion()) {
-        circle.classList.add('fa-circle-check');
-    } else {
-    circle.classList.add('fa-circle');}
-    circle.setAttribute('id',`completion-circle-${index}`);
-    circle.addEventListener('click', () => {
-        toggleTaskCompletion(index);
-    })
-    task.appendChild(circle);
+  const taskList = document.getElementById('task-list');
+  const task = document.createElement('div');
+  task.classList.add('task-item');
+  const circle = document.createElement('span');
+  circle.classList.add('fa-regular');
+  circle.classList.add('fa-circle');
+  circle.setAttribute('id', `completion-circle-${index}`);
+  circle.addEventListener('click', () => {
+    toggleTaskCompletion(index);
+  });
+  task.appendChild(circle);
 
-    const taskName = document.createElement('p');
-    taskName.innerHTML = projectList[currentProjectIndex].get(index).getName();
-    task.appendChild(taskName);
+  const taskName = document.createElement('p');
+  taskName.innerHTML = itemList[index].getName();
+  task.appendChild(taskName);
 
-    const dueDate = document.createElement('p');
-    dueDate.innerHTML = `Due Date: ${format(projectList[currentProjectIndex].get(index).getDueDate(), 'MM/dd/yyyy')}`;
-    task.appendChild(dueDate);
+  const dueDate = document.createElement('p');
+  dueDate.innerHTML = `Due Date: ${format(
+    itemList[index].getDueDate(),
+    'MM/dd/yyyy'
+  )}`;
+  task.appendChild(dueDate);
 
-    const priorityDiv = document.createElement('div');
-    const priority = document.createElement('p');
-    priority.innerHTML = 'Priority: '
-    const priorityBtn = document.createElement('button');
-    priorityBtn.value = projectList[currentProjectIndex].get(index).getPriority();
-    priorityBtn.setAttribute('id', `priority-box-${index}`)
-    priorityBtn.classList.add('priority-box');
+  const priorityDiv = document.createElement('div');
+  const priority = document.createElement('p');
+  priority.innerHTML = 'Priority: ';
+  const priorityBtn = document.createElement('button');
+  priorityBtn.value = itemList[index].getPriority();
+  priorityBtn.setAttribute('id', `priority-box-${index}`);
+  priorityBtn.classList.add('priority-box');
 
-    if (projectList[currentProjectIndex].get(index).getPriority() === 'low') {
-        priorityBtn.style.background = 'green';
-    } else if (projectList[currentProjectIndex].get(index).getPriority() === 'med'){
-        priorityBtn.style.background = 'yellow';
-    } else if (projectList[currentProjectIndex].get(index).getPriority() === 'high'){
-        priorityBtn.style.background = 'red';
-    }
+  if (itemList[index].getPriority() === 'low') {
+    priorityBtn.style.background = 'green';
+  } else if (itemList[index].getPriority() === 'med') {
+    priorityBtn.style.background = 'yellow';
+  } else if (itemList[index].getPriority() === 'high') {
+    priorityBtn.style.background = 'red';
+  }
 
-    priorityBtn.addEventListener('click', () => {
-        changePriority(priorityBtn);
+  priorityBtn.addEventListener('click', () => {
+    changePriority(priorityBtn);
 
-        projectList[currentProjectIndex].get(index).setPriority(priorityBtn.value);
+    itemList[index].setPriority(priorityBtn.value);
+  });
 
-    })
+  priorityDiv.appendChild(priority);
+  priorityDiv.appendChild(priorityBtn);
 
-    priorityDiv.appendChild(priority);
-    priorityDiv.appendChild(priorityBtn);
+  task.appendChild(priorityDiv);
 
-    task.appendChild(priorityDiv);
-
-    const deleteBtn = document.createElement('span');
-    deleteBtn.classList.add('fa-regular');
-    deleteBtn.classList.add('fa-trash-can')
-    deleteBtn.addEventListener('click', () => {
-        deleteTask(index);
-    });
-
-    task.appendChild(deleteBtn);
-
-
-    taskList.appendChild(task);
+  const deleteBtn = document.createElement('span');
+  deleteBtn.classList.add('fa-regular');
+  deleteBtn.classList.add('fa-trash-can');
+  deleteBtn.addEventListener('click', () => {
+    deleteTask(index);
+  });
+  task.appendChild(deleteBtn);
+  taskList.appendChild(task);
 }
 
 function toggleTaskCompletion(index) {
-    const circle = document.getElementById(`completion-circle-${index}`);
-    if (!projectList[currentProjectIndex].get(index).getCompletion()) {
+  const circle = document.getElementById(`completion-circle-${index}`);
+  if (!itemList[index].getCompletion()) {
     circle.classList.remove('fa-circle');
     circle.classList.add('fa-circle-check');
-    projectList[currentProjectIndex].get(index).setCompletion(true);
-    } else if (projectList[currentProjectIndex].get(index).getCompletion()) {
-        circle.classList.remove('fa-circle-check');
-        circle.classList.add('fa-circle');
-        projectList[currentProjectIndex].get(index).setCompletion(false);
-    }
+    itemList[index].setCompletion(true);
+  } else if (itemList[index].getCompletion()) {
+    circle.classList.remove('fa-circle-check');
+    circle.classList.add('fa-circle');
+    itemList[index].setCompletion(false);
+  }
 }
 
 function deleteTask(index) {
-    projectList[currentProjectIndex].remove(index);
-    load();
+  removeItem(index);
+  load();
 }

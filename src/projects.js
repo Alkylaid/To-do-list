@@ -1,4 +1,4 @@
-export{projectList, createProject, addProject, removeProject}
+export{projectList, createProject, addProject, removeProject, mergeTaskLists}
 
 const projectList =[];
 
@@ -44,5 +44,13 @@ function addProject(project) {
 function removeProject(index) {
     projectList.splice(index, 1);
 
+}
+
+function mergeTaskLists(){
+    let taskList = [];
+    for (let i = 0; i < projectList.length; i++) {
+        taskList.push(...projectList[i].getList());
+    }
+    return taskList;
 }
 
