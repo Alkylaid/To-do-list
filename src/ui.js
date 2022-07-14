@@ -1,6 +1,5 @@
 export { initButtons };
-import { itemList, createItem } from './items.js';
-import { load, loadToday, loadWeekly, setCurrentProject } from './content.js';
+import {load} from './content.js';
 const projectList = [];
 
 function initButtons() {

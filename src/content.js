@@ -1,14 +1,9 @@
-export { load, loadToday, loadWeekly, setCurrentProject };
+export { load, loadToday, loadWeekly};
 import { parse, format, addWeeks, compareAsc } from 'date-fns';
-import { projectList, mergeTaskLists } from './projects.js';
 import { createItem, itemList, removeItem } from './items.js';
 
 const content = document.getElementById('content');
-let currentProjectIndex = 0;
 
-function setCurrentProject(index) {
-  currentProjectIndex = index;
-}
 
 function load() {
   if (!document.getElementById('add-task-btn')) {
@@ -120,8 +115,8 @@ function initTaskForm() {
 
   const priorityContainer = document.createElement('div');
   const priority = document.createElement('button');
+  priority.setAttribute('id','priority-box-form');
   priority.classList.add('priority-box');
-  priority.classList.add('priority-box-form');
   priority.value = 'low';
   priority.addEventListener('click', (e) => {
     e.preventDefault();
@@ -174,26 +169,24 @@ function showTaskButton() {
 }
 
 function changePriority(node) {
-  const priority = node;
-
-  const priorityText = document.getElementById('priority-text');
-  if (priority.value === 'low') {
-    priority.style.background = 'yellow';
-    priority.value = 'med';
-    if (priorityText) {
-      priorityText.innerHTML = 'Med';
+    const priorityText = document.getElementById('priority-text');
+  if (node.value ==='low') {
+    node.style.background = 'yellow';
+    node.value = 'med';
+    if (node === document.getElementById('priority-box-form')) {
+        priorityText.innerHTML = 'Med';
     }
-  } else if (priority.value === 'med') {
-    priority.style.background = 'red';
-    priority.value = 'high';
-    if (priorityText) {
-      priorityText.innerHTML = 'High';
+  } else if (node.value === 'med') {
+    node.style.background = 'red';
+    node.value = 'high';
+    if (node === document.getElementById('priority-box-form')) {
+        priorityText.innerHTML = 'High';
     }
-  } else if (priority.value === 'high') {
-    priority.style.background = 'green';
-    priority.value = 'low';
-    if (priorityText) {
-      priorityText.innerHTML = 'Low';
+  } else if (node.value === 'high') {
+    node.style.background = 'green';
+    node.value = 'low';
+    if (node === document.getElementById('priority-box-form')) {
+        priorityText.innerHTML = 'Low';
     }
   }
 }
@@ -207,7 +200,7 @@ function addTasks() {
     new Date()
   );
   const description = document.getElementById('description-input-field').value;
-  const priority = document.querySelector('.priority-box-form').value;
+  const priority = document.getElementById('priority-box-form').value;
   const currentProject = document.querySelector('.active').value;
   createItem(taskName, description, dateCreated, date, priority, currentProject);
 }
