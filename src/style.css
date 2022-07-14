@@ -233,7 +233,9 @@ form .button:hover{
     grid-column: 2/3;
     background-color: var(--primary-light) ;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 50px;
 }
 
 #add-task-btn{
@@ -275,6 +277,7 @@ border-radius: 5px;
 color: var(--primary-dark);
 box-shadow: 0px 0px 5px var(--primary-dark);
 
+
 }
 
 
@@ -299,7 +302,7 @@ label{
 
 }
 
-#priority-box {
+.priority-box {
     height: 1rem;
     width: 1rem;
     border: 1px solid black;
@@ -349,3 +352,57 @@ label{
     background-color: #71efbb;
 }
 
+#task-list{
+    width: 50%;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+}
+
+.task-item{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(5, auto);
+    height: 50px;
+    border: 1px solid black;
+    margin-bottom: 10px;
+    padding: 20px;
+    align-items: center;
+    column-gap: 20px;
+    
+}
+
+.task-item .fa-circle, .task-item .fa-circle-check{
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.task-item .fa-circle:hover, .task-item .fa-circle-check:hover{
+    cursor: pointer;
+}
+
+.task-item div{
+
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+    justify-self: center;
+}
+
+.task-item p{
+    justify-self: start;
+}
+
+.task-item .fa-trash-can{
+    justify-self: end;
+    font-size: 1.2rem;
+}
+
+.task-item .fa-trash-can:hover{
+    justify-self: end;
+    font-size: 1.2rem;
+    color: var(--secondary-dark);
+    cursor: pointer;
+}

@@ -85,7 +85,7 @@ function updateProjectList() {
   const projectsContainer = document.createElement('div');
   projectsContainer.setAttribute('id', 'projects-container');
   projects.appendChild(projectsContainer)
-  for (let i = 0; i < projectList.length; i++) {
+  for (let i = 1; i < projectList.length; i++) {
     const project = document.createElement('div');
     project.classList.add('project');
 

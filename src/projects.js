@@ -16,13 +16,17 @@ class Project{
         return this.toDos[item];
     }
 
-    remove(item) {
-        const index = this.toDos.indexOf(item);
+    remove(index) {
         this.toDos.splice(index, 1);
+
     }
 
     getName() {
         return this.name;
+    }
+
+    getLength() {
+        return this.toDos.length;
     }
 }
 
@@ -36,5 +40,6 @@ function addProject(project) {
 
 function removeProject(index) {
     projectList.splice(index, 1);
+
 }
 

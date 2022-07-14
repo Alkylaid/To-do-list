@@ -1,20 +1,25 @@
 export {createItem}
 
 class Item{
-    constructor(title, description, dueDate, priority) {
-        this.title = title;
+    constructor(name, description, dateCreated, dueDate, priority) {
+        this.name = name;
         this.description = description;
+        this.dateCreated = dateCreated;
         this.dueDate = dueDate;
         this.priority = priority;
         this.isCompleted = false;
     }
 
-    getTitle() {
-        return this.title;
+    getName() {
+        return this.name;
     }
 
     getDescription() {
         return this.description;
+    }
+
+    getDateCreated() {
+        return this.dateCreated;
     }
 
     getDueDate() {
@@ -22,10 +27,24 @@ class Item{
     }
 
     getPriority() {
-        return this. priority;
+        return this.priority;
     }
+
+    setPriority(newPriority) {
+        this.priority = newPriority;
+    }
+
+    setCompletion(completion) {
+        this.isCompleted = completion;
+    }
+
+    getCompletion() {
+        return this.isCompleted;
+    }
+
+    
 }
 
-function createItem(title, description, dueDate, priority) {
-    return new Item(title, description, dueDate, priority);
+function createItem(title, description, dateCreated, dueDate, priority) {
+    return new Item(title, description, dateCreated, dueDate, priority);
 }
