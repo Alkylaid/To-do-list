@@ -221,8 +221,13 @@ function createTask(index) {
   const task = document.createElement('div');
   task.classList.add('task-item');
   const circle = document.createElement('span');
+ 
   circle.classList.add('fa-regular');
-  circle.classList.add('fa-circle');
+  if (!itemList[index].getCompletion()) {
+    circle.classList.add('fa-circle');
+} else {
+    circle.classList.add('fa-circle-check');
+}
   circle.setAttribute('id', `completion-circle-${index}`);
   circle.addEventListener('click', () => {
     toggleTaskCompletion(index);
@@ -295,3 +300,8 @@ function deleteTask(index) {
   load();
 }
 
+
+function viewTask(index) {
+    const taskViewWindow = document.createElement('div');
+
+}

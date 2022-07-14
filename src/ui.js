@@ -1,5 +1,5 @@
 export { initButtons };
-import {load, initAddTaskButton, showTaskButton} from './content.js';
+import {load, showTaskButton} from './content.js';
 const projectList = [];
 
 function initButtons() {
@@ -157,7 +157,6 @@ function clearActiveClasses() {
 
 function resetContent() {
   const taskForm = document.getElementById('task-form');
-  const addTaskBtn = document.getElementById('add-task-btn');
   if (taskForm) {
     taskForm.remove();
     showTaskButton();}
