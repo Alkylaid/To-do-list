@@ -1,11 +1,20 @@
 export { initButtons };
 import { projectList, createProject, removeProject } from './projects.js';
+import { load, setCurrentProject } from './content.js';
 const container = document.getElementById('container');
 
 function initButtons() {
+  const inboxBtn = document.getElementById('inbox-button');
+  inboxBtn.addEventListener('click', () => {
+    clearActiveClasses();
+    document.getElementById('inbox-container').classList.add('active');
+    setCurrentProject(0);
+    load();
+  })
   const newProjectButton = document.getElementById('add-new-project-container');
   newProjectButton.addEventListener('click', newProjectForm);
   createProject('inbox');
+
 }
 
 function newProjectForm() {
@@ -88,18 +97,24 @@ function updateProjectList() {
   for (let i = 1; i < projectList.length; i++) {
     const project = document.createElement('div');
     project.classList.add('project');
-
     const frontSpan = document.createElement('span');
     frontSpan.classList.add('fa-solid')
     frontSpan.classList.add('fa-list-check');
     project.appendChild(frontSpan);
+    
 
     const projectName = document.createElement('div');
     projectName.classList.add('project-name');
     projectName.setAttribute('id', `project-[${i}]`);
     projectName.innerHTML = `${projectList[i].getName()}`;
+    projectName.value = i;
+    projectName.addEventListener('click', () => {
+    clearActiveClasses();
+    project.classList.add('active');
+    setCurrentProject(i);
+    load();}
+    );
     project.appendChild(projectName);
-
     const backSpan = document.createElement('span');
     backSpan.classList.add('project-delete');
     backSpan.classList.add('fa-regular');
@@ -120,4 +135,12 @@ function deleteProject(index) {
     updateProjectList();
 
 }
+
+
+function clearActiveClasses() {
+  const activeClasses = document.querySelectorAll('.active')
+  activeClasses.forEach((active) => {
+    active.classList.remove('active');
+  })
+  }
 

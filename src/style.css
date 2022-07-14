@@ -420,3 +420,7 @@ label{
     cursor: pointer;
 }
 
+.default-button-container.active, .project.active{
+ 
+    background-color: var(--secondary-dark);
+}

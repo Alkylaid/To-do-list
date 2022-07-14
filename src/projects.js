@@ -18,7 +18,6 @@ class Project{
 
     remove(index) {
         this.toDos.splice(index, 1);
-
     }
 
     getName() {
@@ -27,6 +26,10 @@ class Project{
 
     getLength() {
         return this.toDos.length;
+    }
+
+    getList() {
+        return this.toDos;
     }
 }
 

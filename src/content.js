@@ -1,21 +1,26 @@
-export { loadInbox };
+export { load, setCurrentProject };
 import { parse, format } from 'date-fns';
 import { projectList } from './projects.js';
 import { createItem } from './items.js';
 
 const content = document.getElementById('content');
+let currentProjectIndex = 0;
 
-function loadInbox() {
+function setCurrentProject(index){
+    currentProjectIndex = index;
+}
+
+function load() {
   if(!document.getElementById('add-task-btn')){
   initAddTaskButton();}
   if(document.getElementById('task-list')){
     document.getElementById('task-list').remove();
   }
-  if (projectList[0].getLenth !== 0) {
+  if (projectList[currentProjectIndex].getLength !== 0) {
   const taskList = document.createElement('div');
   taskList.setAttribute('id', 'task-list');
   content.prepend(taskList);
-  for (let i = 0; i < projectList[0].getLength(); i++) {
+  for (let i = 0; i < projectList[currentProjectIndex].getLength(); i++) {
     createTask(i);
   }}
 
@@ -106,7 +111,7 @@ function initTaskForm() {
     addTasks();
     taskForm.remove();
     showTaskButton();
-    loadInbox();
+    load();
   });
   buttonContainer.appendChild(submitButton);
   taskForm.appendChild(buttonContainer);
@@ -156,7 +161,7 @@ function addTasks() {
   );
   const description = document.getElementById('description-input-field').value;
   const priority = document.querySelector('.priority-box-form').value;
-  projectList[0].add(
+  projectList[currentProjectIndex].add(
     createItem(name, description, dateCreated, date, priority)
   );
 }
@@ -166,10 +171,9 @@ function createTask(index) {
     const taskList = document.getElementById('task-list');
     const task = document.createElement('div');
     task.classList.add('task-item');
-    task.value = `${index}`
     const circle = document.createElement('span');
     circle.classList.add('fa-regular');
-    if (projectList[0].get(index).getCompletion()) {
+    if (projectList[currentProjectIndex].get(index).getCompletion()) {
         circle.classList.add('fa-circle-check');
     } else {
     circle.classList.add('fa-circle');}
@@ -180,33 +184,33 @@ function createTask(index) {
     task.appendChild(circle);
 
     const taskName = document.createElement('p');
-    taskName.innerHTML = projectList[0].get(index).getName();
+    taskName.innerHTML = projectList[currentProjectIndex].get(index).getName();
     task.appendChild(taskName);
 
     const dueDate = document.createElement('p');
-    dueDate.innerHTML = `Due Date: ${format(projectList[0].get(index).getDueDate(), 'MM/dd/yyyy')}`;
+    dueDate.innerHTML = `Due Date: ${format(projectList[currentProjectIndex].get(index).getDueDate(), 'MM/dd/yyyy')}`;
     task.appendChild(dueDate);
 
     const priorityDiv = document.createElement('div');
     const priority = document.createElement('p');
     priority.innerHTML = 'Priority: '
     const priorityBtn = document.createElement('button');
-    priorityBtn.value = projectList[0].get(index).getPriority();
+    priorityBtn.value = projectList[currentProjectIndex].get(index).getPriority();
     priorityBtn.setAttribute('id', `priority-box-${index}`)
     priorityBtn.classList.add('priority-box');
 
-    if (projectList[0].get(index).getPriority() === 'low') {
+    if (projectList[currentProjectIndex].get(index).getPriority() === 'low') {
         priorityBtn.style.background = 'green';
-    } else if (projectList[0].get(index).getPriority() === 'med'){
+    } else if (projectList[currentProjectIndex].get(index).getPriority() === 'med'){
         priorityBtn.style.background = 'yellow';
-    } else if (projectList[0].get(index).getPriority() === 'high'){
+    } else if (projectList[currentProjectIndex].get(index).getPriority() === 'high'){
         priorityBtn.style.background = 'red';
     }
 
     priorityBtn.addEventListener('click', () => {
         changePriority(priorityBtn);
 
-        projectList[0].get(index).setPriority(priorityBtn.value);
+        projectList[currentProjectIndex].get(index).setPriority(priorityBtn.value);
 
     })
 
@@ -219,7 +223,7 @@ function createTask(index) {
     deleteBtn.classList.add('fa-regular');
     deleteBtn.classList.add('fa-trash-can')
     deleteBtn.addEventListener('click', () => {
-        deleteTask(task.value);
+        deleteTask(index);
     });
 
     task.appendChild(deleteBtn);
@@ -230,18 +234,18 @@ function createTask(index) {
 
 function toggleTaskCompletion(index) {
     const circle = document.getElementById(`completion-circle-${index}`);
-    if (!projectList[0].get(index).getCompletion()) {
+    if (!projectList[currentProjectIndex].get(index).getCompletion()) {
     circle.classList.remove('fa-circle');
     circle.classList.add('fa-circle-check');
-    projectList[0].get(index).setCompletion(true);
-    } else if (projectList[0].get(index).getCompletion()) {
+    projectList[currentProjectIndex].get(index).setCompletion(true);
+    } else if (projectList[currentProjectIndex].get(index).getCompletion()) {
         circle.classList.remove('fa-circle-check');
         circle.classList.add('fa-circle');
-        projectList[0].get(index).setCompletion(false);
+        projectList[currentProjectIndex].get(index).setCompletion(false);
     }
 }
 
 function deleteTask(index) {
-    projectList[0].remove(index);
-    loadInbox();
+    projectList[currentProjectIndex].remove(index);
+    load();
 }
