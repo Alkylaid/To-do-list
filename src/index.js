@@ -1,8 +1,6 @@
-import './style.css';
-import {initButtons} from './ui.js';
-import {load} from './content.js';
-import { getLocalStorage } from './localStorage';
+import './style.css'
+import { initButtons } from './ui.js'
+import { load } from './content.js'
 
-
-initButtons();
-load();
+initButtons()
+load()

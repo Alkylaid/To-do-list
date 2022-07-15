@@ -1,68 +1,65 @@
-export {createItem , itemList, removeItem}
+export { createItem, itemList, removeItem }
 
-let itemList = []
-class Item{
-    constructor(name, description, dueDate, priority, project) {
-        this.name = name;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.priority = priority;
-        this.isCompleted = false;
-        this.project = project;
-    }
+const itemList = []
+class Item {
+  constructor (name, description, dueDate, priority, project) {
+    this.name = name
+    this.description = description
+    this.dueDate = dueDate
+    this.priority = priority
+    this.isCompleted = false
+    this.project = project
+  }
 
-    getName() {
-        return this.name;
-    }
+  getName () {
+    return this.name
+  }
 
-    setName(newName) {
-        this.name = newName;
-    }
-    
+  setName (newName) {
+    this.name = newName
+  }
 
-    getDescription() {
-        return this.description;
-    }
+  getDescription () {
+    return this.description
+  }
 
-    setDescription(newDescription) {
-        this.description = newDescription;
-    }
+  setDescription (newDescription) {
+    this.description = newDescription
+  }
 
-    getDueDate() {
-        return this.dueDate;
-    }
-    
-    setDueDate(newDate) {
-        this.dueDate = newDate;
-    }
+  getDueDate () {
+    return this.dueDate
+  }
 
-    getPriority() {
-        return this.priority;
-    }
+  setDueDate (newDate) {
+    this.dueDate = newDate
+  }
 
-    setPriority(newPriority) {
-        this.priority = newPriority;
-    }
+  getPriority () {
+    return this.priority
+  }
 
-    setCompletion(completion) {
-        this.isCompleted = completion;
-    }
+  setPriority (newPriority) {
+    this.priority = newPriority
+  }
 
-    getCompletion() {
-        return this.isCompleted;
-    }
+  setCompletion (completion) {
+    this.isCompleted = completion
+  }
 
-    getProject() {
-        return this.project;
-    }
+  getCompletion () {
+    return this.isCompleted
+  }
 
-    
+  getProject () {
+    return this.project
+  }
 }
 
-function createItem(title, description, dueDate, priority, project) {
-    itemList.push(new Item(title, description, dueDate, priority, project));
+function createItem (title, description, dueDate, priority, project) {
+  itemList.push(new Item(title, description, dueDate, priority, project))
 }
 
-function removeItem(index) {
-    itemList.splice(index, 1);
+function removeItem (index) {
+  itemList.splice(index, 1)
 }
