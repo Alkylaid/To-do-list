@@ -89,6 +89,7 @@ function initTaskForm() {
   const taskName = document.createElement('input');
   taskName.setAttribute('id', 'task-name-field');
   taskForm.appendChild(taskName);
+  taskName.required = true;
 
   const dateLabel = document.createElement('label');
   dateLabel.innerHTML = 'Due Date:';
@@ -99,20 +100,7 @@ function initTaskForm() {
   date.setAttribute('id', 'date-input-field');
 
   date.value = format(new Date(), 'yyyy-MM-d');
-  if (
-    document.querySelector('.active') ===
-    document.getElementById('weekly-container')
-  ) {
-    const maxDate = format(addWeeks(new Date(), 1), 'yyyy-MM-d');
-    date.max = maxDate;
-    date.min = date.value;
-  } else if (
-    document.querySelector('.active') ===
-    document.getElementById('today-container')
-  ) {
-    date.max = date.value;
-    date.min = date.value;
-  }
+
 
   taskForm.appendChild(date);
 
@@ -161,15 +149,19 @@ function initTaskForm() {
   buttonContainer.appendChild(cancelButton);
 
   const submitButton = document.createElement('button');
+  submitButton.setAttribute('type', 'submit');
   submitButton.setAttribute('id', 'task-add-button');
   submitButton.innerHTML = 'Add';
   submitButton.addEventListener('click', (e) => {
-    e.preventDefault();
+    if (taskName.value === ''){
+    taskForm.reportValidity();
+    } else {
     addTasks();
     taskForm.remove();
     showTaskButton();
     save();
     load();
+    }
 
   });
   buttonContainer.appendChild(submitButton);
@@ -322,7 +314,7 @@ function deleteTask(index) {
 }
 
 function viewTask(index) {
-  const taskViewWindow = document.createElement('div');
+  const taskViewWindow = document.createElement('form');
   taskViewWindow.setAttribute('id', 'task-view-window');
   const taskItem = document.getElementById(`task-item-${index}`);
   const taskList = document.getElementById('task-list');
@@ -335,6 +327,7 @@ function viewTask(index) {
   taskName.setAttribute('id', 'task-name-field');
   taskName.value = itemList[index].name;
   taskName.disabled = true;
+  taskName.required = true;
   taskViewWindow.appendChild(taskName);
 
   const dateLabel = document.createElement('label');
@@ -428,6 +421,7 @@ function viewTask(index) {
   editButton.setAttribute('id', 'edit-button');
   editButton.innerHTML = 'Edit';
   editButton.addEventListener('click', (e) => {
+    e.preventDefault();
     taskName.disabled = false;
     description.disabled = false;
     date.disabled = false;
@@ -440,7 +434,11 @@ function viewTask(index) {
   const saveButton = document.createElement('button');
   saveButton.setAttribute('id', 'save-button');
   saveButton.innerHTML = 'Save';
-  saveButton.addEventListener('click', () => {
+  saveButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (taskName.value === ''){
+      taskViewWindow.reportValidity();
+      } else {
     taskName.disabled = true;
     description.disabled = true;
     date.disabled = true;
@@ -450,7 +448,7 @@ function viewTask(index) {
     itemList[index].description = description.value;
     itemList[index].priority = priority.value;
     save();
-    load();
+    load();}
   });
   saveButton.style.display = 'none';
   buttonContainer.appendChild(saveButton);

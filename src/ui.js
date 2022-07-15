@@ -54,6 +54,7 @@ function newProjectForm() {
   nameInput.setAttribute('id', 'project-name-input');
   nameInput.setAttribute('maxlength', '25');
   nameInput.setAttribute('placeholder', 'Enter a project name');
+  nameInput.required = true;
 
   const formBtnsContainer = document.createElement('div');
   formBtnsContainer.setAttribute('id', 'form-btn-container');
@@ -64,7 +65,13 @@ function newProjectForm() {
   submitBtn.textContent = 'Add';
   submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    newProjectSubmit();
+    if (projectList.includes(nameInput.value)) {
+      nameInput.setCustomValidity('Cannot have duplicate project names.');
+      form.reportValidity();
+    } else if (nameInput.value === '') {
+      form.reportValidity();
+    } else {
+    newProjectSubmit();}
   });
 
   const cancelBtn = document.createElement('button');
