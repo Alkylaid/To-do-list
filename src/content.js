@@ -1,9 +1,8 @@
-export { load, loadToday, loadWeekly, initAddTaskButton, showTaskButton};
+export { load, loadToday, loadWeekly, initAddTaskButton, showTaskButton };
 import { parse, format, addWeeks, compareAsc } from 'date-fns';
 import { createItem, itemList, removeItem } from './items.js';
 
 const content = document.getElementById('content');
-
 
 function load() {
   if (!document.getElementById('add-task-btn')) {
@@ -24,16 +23,14 @@ function load() {
         loadWeekly();
       } else if (active === document.getElementById('inbox-container')) {
         for (let i = 0; i < itemList.length; i++) {
-            createTask(i);
-          }
+          createTask(i);
+        }
       } else {
         loadProjects();
       }
     });
   }
 }
-
-
 
 function loadToday() {
   for (let i = 0; i < itemList.length; i++) {
@@ -58,13 +55,13 @@ function loadWeekly() {
 }
 
 function loadProjects() {
-    const activeProject = document.querySelector('.active').value;
+  const activeProject = document.querySelector('.active').value;
 
-    for (let i = 0; i < itemList.length; i++) {
-        if (itemList[i].getProject() === activeProject) {
-            createTask(i);
-        }
+  for (let i = 0; i < itemList.length; i++) {
+    if (itemList[i].getProject() === activeProject) {
+      createTask(i);
     }
+  }
 }
 
 function initAddTaskButton() {
@@ -100,14 +97,20 @@ function initTaskForm() {
   date.setAttribute('id', 'date-input-field');
 
   date.value = format(new Date(), 'yyyy-MM-d');
-    if (document.querySelector('.active') === document.getElementById('weekly-container')) {
-        const maxDate = format(addWeeks(new Date(), 1),'yyyy-MM-d');
-        date.max = maxDate;
-        date.min = date.value;
-    } else if (document.querySelector('.active') === document.getElementById('today-container')) {
-        date.max = date.value;
-        date.min = date.value;
-    }
+  if (
+    document.querySelector('.active') ===
+    document.getElementById('weekly-container')
+  ) {
+    const maxDate = format(addWeeks(new Date(), 1), 'yyyy-MM-d');
+    date.max = maxDate;
+    date.min = date.value;
+  } else if (
+    document.querySelector('.active') ===
+    document.getElementById('today-container')
+  ) {
+    date.max = date.value;
+    date.min = date.value;
+  }
 
   taskForm.appendChild(date);
 
@@ -115,7 +118,8 @@ function initTaskForm() {
   descLabel.innerHTML = 'Description:';
   taskForm.appendChild(descLabel);
 
-  const description = document.createElement('input');
+  const description = document.createElement('textarea');
+  description.style.resize = 'none';
   description.setAttribute('id', 'description-input-field');
   taskForm.appendChild(description);
 
@@ -125,7 +129,7 @@ function initTaskForm() {
 
   const priorityContainer = document.createElement('div');
   const priority = document.createElement('button');
-  priority.setAttribute('id','priority-box-form');
+  priority.setAttribute('id', 'priority-box-form');
   priority.classList.add('priority-box');
   priority.value = 'low';
   priority.addEventListener('click', (e) => {
@@ -168,7 +172,6 @@ function initTaskForm() {
   taskForm.appendChild(buttonContainer);
 }
 
-
 function hideTaskButton() {
   const addTaskBtn = document.getElementById('add-task-btn');
   addTaskBtn.style.display = 'none';
@@ -180,31 +183,30 @@ function showTaskButton() {
 }
 
 function changePriority(node) {
-    const priorityText = document.getElementById('priority-text');
-  if (node.value ==='low') {
+  const priorityText = document.getElementById('priority-text');
+  if (node.value === 'low') {
     node.style.background = 'yellow';
     node.value = 'med';
     if (node === document.getElementById('priority-box-form')) {
-        priorityText.innerHTML = 'Med';
+      priorityText.innerHTML = 'Med';
     }
   } else if (node.value === 'med') {
     node.style.background = 'red';
     node.value = 'high';
     if (node === document.getElementById('priority-box-form')) {
-        priorityText.innerHTML = 'High';
+      priorityText.innerHTML = 'High';
     }
   } else if (node.value === 'high') {
     node.style.background = 'green';
     node.value = 'low';
     if (node === document.getElementById('priority-box-form')) {
-        priorityText.innerHTML = 'Low';
+      priorityText.innerHTML = 'Low';
     }
   }
 }
 
 function addTasks() {
   const taskName = document.getElementById('task-name-field').value;
-  const dateCreated = new Date();
   const date = parse(
     document.getElementById('date-input-field').value,
     'yyyy-MM-d',
@@ -213,21 +215,28 @@ function addTasks() {
   const description = document.getElementById('description-input-field').value;
   const priority = document.getElementById('priority-box-form').value;
   const currentProject = document.querySelector('.active').value;
-  createItem(taskName, description, dateCreated, date, priority, currentProject);
+  createItem(
+    taskName,
+    description,
+    date,
+    priority,
+    currentProject
+  );
 }
 
 function createTask(index) {
   const taskList = document.getElementById('task-list');
   const task = document.createElement('div');
   task.classList.add('task-item');
+  task.setAttribute('id', `task-item-${index}`);
   const circle = document.createElement('span');
- 
+
   circle.classList.add('fa-regular');
   if (!itemList[index].getCompletion()) {
     circle.classList.add('fa-circle');
-} else {
+  } else {
     circle.classList.add('fa-circle-check');
-}
+  }
   circle.setAttribute('id', `completion-circle-${index}`);
   circle.addEventListener('click', () => {
     toggleTaskCompletion(index);
@@ -261,12 +270,6 @@ function createTask(index) {
     priorityBtn.style.background = 'red';
   }
 
-  priorityBtn.addEventListener('click', () => {
-    changePriority(priorityBtn);
-
-    itemList[index].setPriority(priorityBtn.value);
-  });
-
   priorityDiv.appendChild(priority);
   priorityDiv.appendChild(priorityBtn);
 
@@ -280,6 +283,9 @@ function createTask(index) {
   });
   task.appendChild(deleteBtn);
   taskList.appendChild(task);
+  task.addEventListener('click', () => {
+    hideTaskButton();
+    viewTask(index)});
 }
 
 function toggleTaskCompletion(index) {
@@ -300,8 +306,138 @@ function deleteTask(index) {
   load();
 }
 
-
 function viewTask(index) {
-    const taskViewWindow = document.createElement('div');
+  const taskViewWindow = document.createElement('div');
+  taskViewWindow.setAttribute('id', 'task-view-window');
+  const taskItem = document.getElementById(`task-item-${index}`);
+  const taskList = document.getElementById('task-list');
 
+  const nameLabel = document.createElement('label');
+  nameLabel.innerHTML = 'Name:';
+
+  taskViewWindow.appendChild(nameLabel);
+  const taskName = document.createElement('input');
+  taskName.setAttribute('id', 'task-name-field');
+  taskName.value = itemList[index].getName();
+  taskName.disabled = true;
+  taskViewWindow.appendChild(taskName);
+
+  const dateLabel = document.createElement('label');
+  dateLabel.innerHTML = 'Due Date:';
+  taskViewWindow.appendChild(dateLabel);
+
+  const date = document.createElement('input');
+  date.setAttribute('type', 'date');
+  date.setAttribute('id', 'date-input-field');
+
+  date.value = format(itemList[index].getDueDate(), 'yyyy-MM-d');
+  date.disabled = true;
+  if (
+    document.querySelector('.active') ===
+    document.getElementById('weekly-container')
+  ) {
+    const maxDate = format(addWeeks(new Date(), 1), 'yyyy-MM-d');
+    date.max = maxDate;
+    date.min = date.value;
+  } else if (
+    document.querySelector('.active') ===
+    document.getElementById('today-container')
+  ) {
+    date.max = date.value;
+    date.min = date.value;
+  }
+
+  taskViewWindow.appendChild(date);
+
+  const descLabel = document.createElement('label');
+  descLabel.innerHTML = 'Description:';
+  taskViewWindow.appendChild(descLabel);
+
+  const description = document.createElement('textarea');
+  description.style.resize = 'none';
+  description.value = itemList[index].getDescription();
+  description.setAttribute('id', 'description-input-field');
+  description.disabled = true;
+  taskViewWindow.appendChild(description);
+
+  const priorityLabel = document.createElement('label');
+  priorityLabel.innerHTML = 'Priority:';
+  taskViewWindow.appendChild(priorityLabel);
+
+  const priorityContainer = document.createElement('div');
+  const priority = document.createElement('button');
+  priority.setAttribute('id', 'priority-box-form');
+  priority.classList.add('priority-box');
+  priority.value = itemList[index].getPriority();
+  
+  priority.disabled = true;
+  
+  const span = document.createElement('span');
+  span.setAttribute('id', 'priority-text');
+  
+  if (itemList[index].getPriority() === 'low') {
+    priority.style.background = 'green';
+    span.innerHTML = 'Low';
+  } else if (itemList[index].getPriority() === 'med') {
+    span.innerHTML = 'Med';
+    priority.style.background = 'yellow';
+  } else if (itemList[index].getPriority() === 'high') {
+    priority.style.background = 'red';
+    span.innerHTML = 'High';
+  }
+
+  priority.addEventListener('click', (e) => {
+    e.preventDefault();
+    changePriority(priority);
+  });
+
+  priorityContainer.appendChild(priority);
+  priorityContainer.appendChild(span);
+  taskViewWindow.appendChild(priorityContainer);
+
+  taskList.replaceChild(taskViewWindow, taskItem);
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.setAttribute('id', 'view-form-button-container');
+  const closeButton = document.createElement('button');
+  closeButton.setAttribute('id', 'task-close-button');
+  closeButton.innerHTML = 'Close';
+  closeButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    load();
+    showTaskButton();
+  });
+  buttonContainer.appendChild(closeButton);
+
+  const editButton = document.createElement('button');
+  editButton.setAttribute('id', 'edit-button');
+  editButton.innerHTML = 'Edit';
+  editButton.addEventListener('click', (e) => {
+    taskName.disabled = false;
+    description.disabled = false;
+    date.disabled = false;
+    priority.disabled = false;
+    saveButton.style.display = '';
+    editButton.style.display = 'none';
+  });
+  buttonContainer.appendChild(editButton);
+
+  const saveButton = document.createElement('button');
+  saveButton.setAttribute('id', 'save-button');
+  saveButton.innerHTML = 'Save';
+  saveButton.addEventListener('click', () => {
+    taskName.disabled = true;
+    description.disabled = true;
+    date.disabled = true;
+    priority.disabled = true;
+    itemList[index].setName(taskName.value);
+    itemList[index].setDueDate(parse(date.value, 'yyyy-MM-d', new Date()));
+    itemList[index].setDescription(description.value);
+    itemList[index].setPriority(priority.value);
+    load();
+  });
+  saveButton.style.display = 'none';
+  buttonContainer.appendChild(saveButton);
+
+  taskViewWindow.appendChild(buttonContainer);
 }

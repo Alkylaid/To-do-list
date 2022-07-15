@@ -2,10 +2,9 @@ export {createItem , itemList, removeItem}
 
 const itemList = []
 class Item{
-    constructor(name, description, dateCreated, dueDate, priority, project) {
+    constructor(name, description, dueDate, priority, project) {
         this.name = name;
         this.description = description;
-        this.dateCreated = dateCreated;
         this.dueDate = dueDate;
         this.priority = priority;
         this.isCompleted = false;
@@ -16,16 +15,25 @@ class Item{
         return this.name;
     }
 
+    setName(newName) {
+        this.name = newName;
+    }
+    
+
     getDescription() {
         return this.description;
     }
 
-    getDateCreated() {
-        return this.dateCreated;
+    setDescription(newDescription) {
+        this.description = newDescription;
     }
 
     getDueDate() {
         return this.dueDate;
+    }
+    
+    setDueDate(newDate) {
+        this.dueDate = newDate;
     }
 
     getPriority() {
@@ -51,8 +59,8 @@ class Item{
     
 }
 
-function createItem(title, description, dateCreated, dueDate, priority, project) {
-    itemList.push(new Item(title, description, dateCreated, dueDate, priority, project));
+function createItem(title, description, dueDate, priority, project) {
+    itemList.push(new Item(title, description, dueDate, priority, project));
 }
 
 function removeItem(index) {
