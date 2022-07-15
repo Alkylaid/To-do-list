@@ -25,7 +25,7 @@ body {
   height: 100%;
   display: grid;
   grid-template-columns: minmax(200px, 15%) 85%;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto auto;
 }
 
 #header {
@@ -39,7 +39,7 @@ body {
 }
 
 #nav-menu {
-  height: 95vh;
+  height: 83vh;
   background-color: var(--primary-dark);
   margin-top: 50px;
   grid-column: 1/2;
@@ -152,6 +152,10 @@ body {
   background-color: var(--secondary-dark);
   grid-column: 1/3;
   grid-row: 3/4;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #projects-container {
@@ -432,8 +436,18 @@ form .button:hover {
   
 }
 
+.fa-otter{
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
 #header-title{
   margin-left: 20px;
   margin-right: 20px;
   font-size: 2.5rem;
+}
+
+#footer:last-child{
+
+  font-size: 1.5rem;
 }
