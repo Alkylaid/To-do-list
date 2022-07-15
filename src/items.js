@@ -1,6 +1,6 @@
 export {createItem , itemList, removeItem}
 
-const itemList = []
+let itemList = []
 class Item{
     constructor(name, description, dueDate, priority, project) {
         this.name = name;

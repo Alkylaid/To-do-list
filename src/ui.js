@@ -1,10 +1,13 @@
-export { initButtons };
+export { initButtons, projectList };
 import {load, showTaskButton} from './content.js';
-const projectList = [];
+import {save, getLocalStorage} from './localstorage.js'
+let projectList = [];
 
 function initButtons() {
+  getLocalStorage();
   const inboxBtn = document.getElementById('inbox-button');
 
+  updateProjectList();
   inboxBtn.addEventListener('click', () => {
     clearActiveClasses();
     document.getElementById('inbox-container').classList.add('active');
@@ -97,6 +100,7 @@ function newProjectSubmit() {
   } else {
     projectList.push(projectName.value);
     projectFormClose();
+    save();
     updateProjectList();
   }
 }
@@ -145,7 +149,9 @@ function deleteProject(index) {
   projectList.splice(index, 1);
   const projects = document.getElementById(`project-[${index}]`);
   projects.remove();
+  save();
   updateProjectList();
+ 
 }
 
 function clearActiveClasses() {

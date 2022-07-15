@@ -377,14 +377,18 @@ form .button:hover {
   justify-self: start;
 }
 
-.task-item .fa-trash-can {
+#task-edit-container {
   justify-self: end;
   font-size: 1.2rem;
 }
 
-.fa-trash-can:hover {
-  justify-self: end;
-  font-size: 1.2rem;
+.fa-trash-can, .fa-pen-to-square{
+    justify-self: end;
+    font-size: 1.2rem;
+}
+
+.fa-trash-can:hover, .fa-pen-to-square:hover, .fa-circle:hover, .fa-circle-check:hover {
+
   text-shadow: 0px 0px 5px var(--primary-light);
   cursor: pointer;
 }

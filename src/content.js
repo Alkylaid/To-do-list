@@ -1,10 +1,12 @@
 export { load, loadToday, loadWeekly, initAddTaskButton, showTaskButton };
 import { parse, format, addWeeks, compareAsc } from 'date-fns';
 import { createItem, itemList, removeItem } from './items.js';
+import {getLocalStorage, save} from './localstorage.js'
 
 const content = document.getElementById('content');
 
 function load() {
+    getLocalStorage();
   if (!document.getElementById('add-task-btn')) {
     initAddTaskButton();
   }
@@ -34,7 +36,7 @@ function load() {
 
 function loadToday() {
   for (let i = 0; i < itemList.length; i++) {
-    const taskDueDate = format(itemList[i].getDueDate(), 'MM/dd/yyyy');
+    const taskDueDate = format(itemList[i].dueDate, 'MM/dd/yyyy');
     const currentDate = format(new Date(), 'MM/dd/yyyy');
     if (taskDueDate === currentDate) {
       createTask(i);
@@ -46,7 +48,7 @@ function loadWeekly() {
   for (let i = 0; i < itemList.length; i++) {
     const today = new Date();
     const nextWeek = addWeeks(today, 1);
-    const taskDueDate = itemList[i].getDueDate();
+    const taskDueDate = itemList[i].dueDate;
     const comparedDates = compareAsc(taskDueDate, nextWeek);
     if (comparedDates === -1 || comparedDates === 0) {
       createTask(i);
@@ -58,7 +60,7 @@ function loadProjects() {
   const activeProject = document.querySelector('.active').value;
 
   for (let i = 0; i < itemList.length; i++) {
-    if (itemList[i].getProject() === activeProject) {
+    if (itemList[i].project === activeProject) {
       createTask(i);
     }
   }
@@ -166,7 +168,9 @@ function initTaskForm() {
     addTasks();
     taskForm.remove();
     showTaskButton();
+    save();
     load();
+
   });
   buttonContainer.appendChild(submitButton);
   taskForm.appendChild(buttonContainer);
@@ -222,6 +226,7 @@ function addTasks() {
     priority,
     currentProject
   );
+
 }
 
 function createTask(index) {
@@ -232,7 +237,7 @@ function createTask(index) {
   const circle = document.createElement('span');
 
   circle.classList.add('fa-regular');
-  if (!itemList[index].getCompletion()) {
+  if (!itemList[index].isCompleted) {
     circle.classList.add('fa-circle');
   } else {
     circle.classList.add('fa-circle-check');
@@ -244,12 +249,12 @@ function createTask(index) {
   task.appendChild(circle);
 
   const taskName = document.createElement('p');
-  taskName.innerHTML = itemList[index].getName();
+  taskName.innerHTML = itemList[index].name;
   task.appendChild(taskName);
 
   const dueDate = document.createElement('p');
   dueDate.innerHTML = `Due Date: ${format(
-    itemList[index].getDueDate(),
+    itemList[index].dueDate,
     'MM/dd/yyyy'
   )}`;
   task.appendChild(dueDate);
@@ -258,15 +263,15 @@ function createTask(index) {
   const priority = document.createElement('p');
   priority.innerHTML = 'Priority: ';
   const priorityBtn = document.createElement('button');
-  priorityBtn.value = itemList[index].getPriority();
+  priorityBtn.value = itemList[index].priority;
   priorityBtn.setAttribute('id', `priority-box-${index}`);
   priorityBtn.classList.add('priority-box');
 
-  if (itemList[index].getPriority() === 'low') {
+  if (itemList[index].priority === 'low') {
     priorityBtn.style.background = 'green';
-  } else if (itemList[index].getPriority() === 'med') {
+  } else if (itemList[index].priority === 'med') {
     priorityBtn.style.background = 'yellow';
-  } else if (itemList[index].getPriority() === 'high') {
+  } else if (itemList[index].priority === 'high') {
     priorityBtn.style.background = 'red';
   }
 
@@ -274,36 +279,46 @@ function createTask(index) {
   priorityDiv.appendChild(priorityBtn);
 
   task.appendChild(priorityDiv);
-
+  const taskEditContainer = document.createElement('div');
+  taskEditContainer.setAttribute('id', 'task-edit-container');
+  const editButton = document.createElement('span');
+  editButton.classList.add('fa-regular');
+  editButton.classList.add('fa-pen-to-square');
+  editButton.addEventListener('click', () => {
+    hideTaskButton();
+    viewTask(index)});
+  
   const deleteBtn = document.createElement('span');
   deleteBtn.classList.add('fa-regular');
   deleteBtn.classList.add('fa-trash-can');
   deleteBtn.addEventListener('click', () => {
     deleteTask(index);
   });
-  task.appendChild(deleteBtn);
+  taskEditContainer.appendChild(editButton);
+  taskEditContainer.appendChild(deleteBtn);
+  task.appendChild(taskEditContainer);
   taskList.appendChild(task);
-  task.addEventListener('click', () => {
-    hideTaskButton();
-    viewTask(index)});
+ 
 }
 
 function toggleTaskCompletion(index) {
   const circle = document.getElementById(`completion-circle-${index}`);
-  if (!itemList[index].getCompletion()) {
+  if (!itemList[index].isCompleted) {
     circle.classList.remove('fa-circle');
     circle.classList.add('fa-circle-check');
-    itemList[index].setCompletion(true);
-  } else if (itemList[index].getCompletion()) {
+    itemList[index].isCompleted = true;
+  } else if (itemList[index].isCompleted) {
     circle.classList.remove('fa-circle-check');
     circle.classList.add('fa-circle');
-    itemList[index].setCompletion(false);
+    itemList[index].isCompleted = false;
   }
 }
 
 function deleteTask(index) {
   removeItem(index);
+  save();
   load();
+
 }
 
 function viewTask(index) {
@@ -318,7 +333,7 @@ function viewTask(index) {
   taskViewWindow.appendChild(nameLabel);
   const taskName = document.createElement('input');
   taskName.setAttribute('id', 'task-name-field');
-  taskName.value = itemList[index].getName();
+  taskName.value = itemList[index].name;
   taskName.disabled = true;
   taskViewWindow.appendChild(taskName);
 
@@ -330,7 +345,7 @@ function viewTask(index) {
   date.setAttribute('type', 'date');
   date.setAttribute('id', 'date-input-field');
 
-  date.value = format(itemList[index].getDueDate(), 'yyyy-MM-d');
+  date.value = format(itemList[index].dueDate, 'yyyy-MM-d');
   date.disabled = true;
   if (
     document.querySelector('.active') ===
@@ -355,7 +370,7 @@ function viewTask(index) {
 
   const description = document.createElement('textarea');
   description.style.resize = 'none';
-  description.value = itemList[index].getDescription();
+  description.value = itemList[index].description;
   description.setAttribute('id', 'description-input-field');
   description.disabled = true;
   taskViewWindow.appendChild(description);
@@ -368,20 +383,20 @@ function viewTask(index) {
   const priority = document.createElement('button');
   priority.setAttribute('id', 'priority-box-form');
   priority.classList.add('priority-box');
-  priority.value = itemList[index].getPriority();
+  priority.value = itemList[index].priority;
   
   priority.disabled = true;
   
   const span = document.createElement('span');
   span.setAttribute('id', 'priority-text');
   
-  if (itemList[index].getPriority() === 'low') {
+  if (itemList[index].priority === 'low') {
     priority.style.background = 'green';
     span.innerHTML = 'Low';
-  } else if (itemList[index].getPriority() === 'med') {
+  } else if (itemList[index].priority === 'med') {
     span.innerHTML = 'Med';
     priority.style.background = 'yellow';
-  } else if (itemList[index].getPriority() === 'high') {
+  } else if (itemList[index].priority === 'high') {
     priority.style.background = 'red';
     span.innerHTML = 'High';
   }
@@ -430,10 +445,11 @@ function viewTask(index) {
     description.disabled = true;
     date.disabled = true;
     priority.disabled = true;
-    itemList[index].setName(taskName.value);
-    itemList[index].setDueDate(parse(date.value, 'yyyy-MM-d', new Date()));
-    itemList[index].setDescription(description.value);
-    itemList[index].setPriority(priority.value);
+    itemList[index].name = taskName.value;
+    itemList[index].dueDate = parse(date.value, 'yyyy-MM-d', new Date());
+    itemList[index].description = description.value;
+    itemList[index].priority = priority.value;
+    save();
     load();
   });
   saveButton.style.display = 'none';
